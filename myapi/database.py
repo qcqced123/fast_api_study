@@ -1,3 +1,4 @@
+import contextlib
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -31,3 +32,12 @@ SessionLocal = sessionmaker(
 
 # Rule 2
 Base = declarative_base()
+
+# DataBase Generator
+# db: Session = Depends(get_db) => True, remove @contextlib.contextmanager
+def get_db():
+  db = SessionLocal()
+  try:
+    yield db
+  finally:
+    db.close()

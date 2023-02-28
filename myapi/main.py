@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from domain.question import question_router
 
 # same as flask
 app = FastAPI()
@@ -16,6 +17,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-@app.get('/hello')
-def hello():
-  return {'message': 'Hello, Pybo, uvicorn, node.js, fastapi'}
+
+app.include_router((question_router.router)) # admin question_router's router in app

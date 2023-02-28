@@ -2,7 +2,8 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
 
-# Make Data Scheme with Python Class
+# Make Data Model with Python Class
+# Question Model
 class Question(Base):
   __tablename__ = "question"
 
@@ -11,6 +12,7 @@ class Question(Base):
   content = Column(Text, nullable=False)
   create_date = Column(DateTime, nullable=False)
 
+# Answer Model
 class Answer(Base):
   __tablename__ = "answer"
 
