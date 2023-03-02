@@ -1,5 +1,6 @@
 <script>
     import fastapi from "../lib/api"
+    import {link} from 'svelte-spa-router' // if you want to use link, import this line
     let question_list = []
   
     function get_question_list() {
@@ -9,10 +10,11 @@
     }
   
     get_question_list()
+    // hash based routing
   </script>
   
   <ul>
     {#each question_list as question}
-      <li>{question.subject}</li>
+      <li><a use:link href="/detail/{question.id}">{question.subject}</a></li>
     {/each}
   </ul>
