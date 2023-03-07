@@ -1,8 +1,8 @@
-import answer_schema, answer_crud
+from ..answer import answer_schema, answer_crud
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
-from ...database import get_db
+from database import get_db
 from ..question import question_crud
 
 router = APIRouter(
