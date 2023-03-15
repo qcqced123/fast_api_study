@@ -1,6 +1,7 @@
 from pydantic import BaseModel, validator
+from domain.user.user_schema import User
 import datetime
-
+from datetime import datetime
 
 class AnswerCreate(BaseModel):
     content: str # dataclasses wrapper가 들어가 있는 듯
@@ -16,6 +17,20 @@ class Answer(BaseModel):
     id: int
     content: str
     create_date: datetime.datetime
+    user: User | None
+    question_id: int
+    modify_date: datetime.datetime | None = None
+
+
     class Config:
         orm_mode = True
+
+
+class AnswerUpdate(AnswerCreate):
+    answer_id: int
+
+
+class AnswerDelete(BaseModel):
+    answer_id: int
+
 

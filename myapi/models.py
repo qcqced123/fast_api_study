@@ -11,6 +11,10 @@ class Question(Base):
   subject = Column(String, nullable=False) # if false, you cannot blank or nan value in subject column
   content = Column(Text, nullable=False)
   create_date = Column(DateTime, nullable=False)
+  user_id = Column(Integer, ForeignKey("user.id"), nullable=True)
+  user = relationship("User", backref="question_users")
+  modify_date = Column(DateTime, nullable=True)
+
 
 # Answer Model
 class Answer(Base):
@@ -21,6 +25,9 @@ class Answer(Base):
   create_date = Column(DateTime, nullable=False)
   question_id = Column(Integer, ForeignKey("question.id"))
   question = relationship("Question", backref="answers") # backref => Very Important
+  user_id = Column(Integer, ForeignKey("user.id"), nullable=True) # add user info
+  user = relationship("User", backref="answer_users") # add user info
+  modify_date = Column(DateTime, nullable=True)
 
 
 class User(Base):
