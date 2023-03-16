@@ -2,7 +2,6 @@ import datetime
 from pydantic import BaseModel, validator
 from ..answer.answer_schema import Answer
 from domain.user.user_schema import User
-from datetime import datetime
 
 
 # Question Schema
@@ -16,6 +15,8 @@ class Question(BaseModel):
   user: User | None
   # Question Model이 자동으로 Question Schema로 변환되도록 하는 기능
   modify_date: datetime.datetime | None = None
+  voter: list[User] = []
+
   class Config:
     orm_mode = True
 
@@ -34,6 +35,11 @@ class QuestionCreate(BaseModel):
 class QuestionList(BaseModel):
     total: int = 0
     question_list: list[Question] = []
+
+
+# 질문에 대한 추천 개수 표시 기능
+class QuestionVote(BaseModel):
+    question_id: int
 
 
 class QuestionUpdate(QuestionCreate):

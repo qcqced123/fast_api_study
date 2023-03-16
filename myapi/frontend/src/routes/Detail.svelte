@@ -3,14 +3,14 @@
     import Error from "../components/Error.svelte"
     import { link, push } from 'svelte-spa-router'
     import { is_login, username } from "../lib/store"
+    import { marked } from 'marked'
     import moment from 'moment/min/moment-with-locales'
-    
     moment.locale('ko')
 
 
     export let params = {}
     let question_id = params.question_id
-    let question = {answers:[]}
+    let question = {answers:[], voter:[], content: ''}
     let content = ""
     let error = {detail:[]}
 
@@ -73,6 +73,40 @@
             )
         }
     }
+    // 질문 추천 기능 구현
+    function vote_question(_question_id) {
+        if(window.confirm('정말로 추천하시겠습니까?')) {
+            let url = "/api/question/vote"
+            let params = {
+                question_id: _question_id
+            }
+            fastapi('post', url, params, 
+                (json) => {
+                    get_question()
+                },
+                (err_json) => {
+                    error = err_json
+                }
+            )
+        }
+    }
+    // 답변 추천 기능
+    function vote_answer(answer_id) {
+        if(window.confirm('정말로 추천하시겠습니까?')) {
+            let url = "/api/answer/vote"
+            let params = {
+                answer_id: answer_id
+            }
+            fastapi('post', url, params, 
+                (json) => {
+                    get_question()
+                },
+                (err_json) => {
+                    error = err_json
+                }
+            )
+        }
+    }
 </script>
 
 <h1>{question.subject}</h1>
@@ -95,7 +129,7 @@
     <h2 class="border-bottom py-2">{question.subject}</h2>
     <div class="card my-3">
         <div class="card-body">
-            <div class="card-text" style="white-space: pre-line;">{question.content}</div>
+            <div class="card-text">{@html marked.parse(question.content)}</div>
             <div class="d-flex justify-content-end">
                 {#if question.modify_date }
                 <div class="badge bg-light text-dark p-2 text-start mx-3">
@@ -109,6 +143,11 @@
                 </div>
             </div>
             <div class="my-3">
+                <button class="btn btn-sm btn-outline-secondary"
+                    on:click="{vote_question(question.id)}"> 
+                    추천
+                    <span class="badge rounded-pill bg-success">{ question.voter.length }</span>
+                </button>
                 {#if question.user && $username === question.user.username }
                 <a use:link href="/question-modify/{question.id}" 
                     class="btn btn-sm btn-outline-secondary">수정</a>
@@ -130,7 +169,7 @@
     {#each question.answers as answer}
     <div class="card my-3">
         <div class="card-body">
-            <div class="card-text" style="white-space: pre-line;">{answer.content}</div>
+            <div class="card-text" >{@html marked.parse(answer.content)}</div>
             <div class="d-flex justify-content-end">
                 {#if answer.modify_date }
                 <div class="badge bg-light text-dark p-2 text-start mx-3">
@@ -140,6 +179,11 @@
                 {/if}
             </div>
             <div class="my-3">
+                <button class="btn btn-sm btn-outline-secondary"
+                    on:click="{vote_answer(answer.id)}"> 
+                    추천
+                    <span class="badge rounded-pill bg-success">{ answer.voter.length }</span>
+                </button>
                 {#if answer.user && $username === answer.user.username }
                 <a use:link href="/answer-modify/{answer.id}" 
                     class="btn btn-sm btn-outline-secondary">수정</a>
